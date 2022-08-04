@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.mapper.StudentMapper">
+	
+	<select id="getStudentList" parameterType="Student"  resultType="Student">
+		select a.stuName,a.age,a.gender,b.schoolName,b.schoolAddr,c.roomName from student a join school b on a.schoolId=b.id join room c on a.roomId=c.roomId
+		<where>
+			<include refid="sql_part1"/>
+		</where>
+	</select>
+	
+	<sql id="sql_part1">
+		<if test="stuName!=null and stuName!=''">
+			and a.stuName like concat('%',#{stuName},'%')
+		</if>
+		<if test="gender!=null and gender!=' '">
+			and a.gender=#{gender}
+		</if>
+		<if test="startAge!=null and startAge!=0">
+			and a.age>#{startAge}
+		</if>
+		<if test="endAge!=null and endAge!=0">
+			and a.age &lt; #{endAge}
+		</if>
+	</sql>
+	
+	<select id="getStudentCount" parameterType="Student"  resultType="int">
+		select count(*) from student
+		<where>
+			<include refid="sql_part2"/>
+		</where>
+	</select>
+	
+	<sql id="sql_part2">
+		<if test="stuName!=null and stuName!=''">
+			and stuName like concat('%',#{stuName},'%')
+		</if>
+		<if test="gender!=null and gender!=' '">
+			and gender=#{gender}
+		</if>
+		<if test="startAge!=null and startAge!=0">
+			and age>#{startAge}
+		</if>
+		<if test="endAge!=null and endAge!=0">
+			and age &lt; #{endAge}
+		</if>
+	</sql>
+	
+	<update id="updateStudent" parameterType="Student">
+		update student set stuName=#{stuName},age=#{age},gender=#{gender} where stuId=#{stuId}	
+	</update>
+	
+	<select id="getStuById"  parameterType="int" resultType="Student" >
+		select * from student where stuId=#{stuId}	
+	</select>	
+
+</mapper>
